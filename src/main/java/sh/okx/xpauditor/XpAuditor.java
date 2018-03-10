@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.utils.IOUtil;
+import org.json.JSONObject;
 import sh.okx.sql.ConnectionBuilder;
 import sh.okx.sql.api.Connection;
 import sh.okx.sql.api.PooledConnection;
@@ -15,22 +17,25 @@ import sh.okx.xpauditor.xp.Material;
 import sh.okx.xpauditor.xp.Nation;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
 public class XpAuditor {
-  public static void main(String[] args) throws LoginException, RateLimitedException, InterruptedException {
+  public static void main(String[] args) throws LoginException, RateLimitedException, IOException {
+    JSONObject json = new JSONObject(new String(IOUtil.readFully(XpAuditor.class.getResourceAsStream("/config.json"))));
+
     new XpAuditor(new JDABuilder(AccountType.BOT)
-      .setToken("NDE5NTc5MDAzMjY4MjM1Mjk0.DXyK6Q.4rg7Ie26hDCPUe6I2OArMbBqLN8")
+      .setToken(json.getString("token"))
       .setGame(Game.watching("XP Resources"))
-      .buildAsync());
+      .buildAsync(), json.getString("database_password"));
   }
 
   private PooledConnection pool;
 
-  private XpAuditor(JDA jda) {
+  private XpAuditor(JDA jda, String password) {
     pool = new ConnectionBuilder()
-        .setCredentials("root", "bobisactuallycool")
+        .setCredentials("root", password)
         .setDatabase("nca")
         .buildPool();
 
