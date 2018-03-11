@@ -16,7 +16,7 @@ public class HelpCommand extends Command {
         .setTitle("Commands")
         .addField("!deposit <amount> [compacted] <material>", "Deposit resources into the stockpile.", false)
         .addField("!withdraw <amount> [compacted] <material>", "Withdraw resources from the stockpile.", false)
-        .addField("!proportion", "See how many resources each nation has stockpiled.", false)
+        .addField("!proportion", "See how many resources each nation or each user has stockpiled.", false)
         .addField("!items", "See what items are in the stockpile and how much XP can be made.", false)
         .build()).queue();
   }

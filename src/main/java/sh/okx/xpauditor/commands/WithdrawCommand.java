@@ -13,7 +13,7 @@ public class WithdrawCommand extends Command {
 
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
-    if(args.length < 2) {
+    if (args.length < 2) {
       channel.sendMessage("Usage: **" + name + " <amount> [compacted] <material>**").queue();
       return;
     }
@@ -22,10 +22,10 @@ public class WithdrawCommand extends Command {
     int amount;
     try {
       amount = Integer.parseInt(args[0]) * (compacted ? 64 : 1);
-      if(amount < 1) {
+      if (amount < 1) {
         throw new IllegalArgumentException();
       }
-    } catch(IllegalArgumentException ex) {
+    } catch (IllegalArgumentException ex) {
       channel.sendMessage("Invalid amount.").queue();
       return;
     }
@@ -33,20 +33,20 @@ public class WithdrawCommand extends Command {
     args = String.join(" ", args).split(" ", compacted ? 3 : 2);
 
     Material material = Material.fromName(args[args.length - 1]);
-    if(material == null) {
+    if (material == null) {
       channel.sendMessage("Invalid material.").queue();
       return;
     }
 
     Nation nation = xpAuditor.getNation(sender);
-    if(nation == null) {
+    if (nation == null) {
       channel.sendMessage("You are not in a nation!").queue();
       return;
     }
 
-    xpAuditor.withdraw(amount, material, nation)
+    xpAuditor.withdraw(amount, material, sender)
         .thenAccept(b -> {
-          if(!b) {
+          if (!b) {
             channel.sendMessage("Not enough resources to withdraw!").queue();
           } else {
             channel.sendMessage("Withdrawn " + amount + " of "

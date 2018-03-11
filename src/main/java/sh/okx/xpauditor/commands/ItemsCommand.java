@@ -27,15 +27,15 @@ public class ItemsCommand extends Command {
       Material mostDemanded = null;
       int count = Integer.MAX_VALUE;
 
-      for(Map.Entry<Material, Integer> entry : amounts.entrySet()) {
+      for (Map.Entry<Material, Integer> entry : amounts.entrySet()) {
         Material material = entry.getKey();
-        message.append("- ").append(entry.getValue()/64).append("/").append(material.getAmountNeeded())
+        message.append("- ").append(entry.getValue() / 64).append("/").append(material.getAmountNeeded())
             .append(" stacks of ")
             .append(material.name().toLowerCase().replace("_", " "))
             .append("\n");
 
         int canMake = entry.getValue() / material.getAmountNeeded();
-        if(canMake < count) {
+        if (canMake < count) {
           mostDemanded = material;
           count = canMake;
         }

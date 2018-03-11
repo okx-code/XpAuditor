@@ -25,7 +25,7 @@ public class CommandManager extends ListenerAdapter {
 
   @Override
   public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-    if(event.isWebhookMessage() || event.getAuthor().isBot()) {
+    if (event.isWebhookMessage() || event.getAuthor().isBot()) {
       return;
     }
 
@@ -33,8 +33,8 @@ public class CommandManager extends ListenerAdapter {
     String cmd = parts[0];
     String[] args = parts.length > 1 ? parts[1].split(" ") : new String[0];
 
-    for(Command command : commands) {
-      if(!command.getName().equalsIgnoreCase(cmd)) {
+    for (Command command : commands) {
+      if (!command.getName().equalsIgnoreCase(cmd)) {
         continue;
       }
 
