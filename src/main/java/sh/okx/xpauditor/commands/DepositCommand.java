@@ -44,7 +44,7 @@ public class DepositCommand extends Command {
       return;
     }
 
-    xpAuditor.deposit(amount, material, sender);
+    xpAuditor.deposit(amount, material, nation);
     channel.sendMessage("Deposited " + amount + " of "
         + material
         + " for " + nation).queue();

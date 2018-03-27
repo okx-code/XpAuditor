@@ -17,20 +17,7 @@ public class ProportionCommand extends Command {
 
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
-    if(args.length != 1) {
-      channel.sendMessage("**Usage:** !proportion <users/nations/all>").queue();
-    }
-
-    boolean all = args[0].equalsIgnoreCase("all");
-    boolean users = all || args[0].equalsIgnoreCase("users");
-    boolean nations = all || args[0].equalsIgnoreCase("nations");
-
-    if(nations) {
-      Arrays.stream(Nation.values()).forEach(nation -> check(channel, nation));
-    }
-    if(users) {
-      sendUserContributions(channel);
-    }
+    Arrays.stream(Nation.values()).forEach(nation -> check(channel, nation));
   }
 
   private void check(TextChannel channel, Nation nation) {
@@ -44,23 +31,6 @@ public class ProportionCommand extends Command {
             .mapToInt(otherNation -> xpAuditor.getContribution(otherNation).join()).sum();
         channel.sendMessage(nation + " has contributed " + amount + " items or "
             + getPercentage(amount, total)).queue();
-      }
-    });
-  }
-
-  private void sendUserContributions(TextChannel channel) {
-    xpAuditor.getUserContributions().thenAccept(map -> {
-      int total = xpAuditor.getTotalUserContributions().join();
-      for(Map.Entry<User, Integer> entry : map.entrySet()) {
-        String user = entry.getKey().getName() + "#" + entry.getKey().getDiscriminator();
-        int amount = entry.getValue();
-
-        if (amount < 0) {
-          channel.sendMessage(user + " has withdrawn " + -amount + " more items than they put in!").queue();
-        } else if(amount > 0) {
-          channel.sendMessage(user + " has contributed " + amount + " items or "
-              + getPercentage(amount, total)).queue();
-        }
       }
     });
   }

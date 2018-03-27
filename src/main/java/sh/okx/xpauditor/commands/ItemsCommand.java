@@ -47,6 +47,5 @@ public class ItemsCommand extends Command {
           .append(" of XP.");
       channel.sendMessage(message).queue();
     });
-
   }
 }

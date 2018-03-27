@@ -14,7 +14,7 @@ public class WithdrawCommand extends Command {
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
     if (args.length < 2) {
-      channel.sendMessage("Usage: **" + name + " <amount> [compacted] <material>**").queue();
+      channel.sendMessage("Usage: **" + name + " <amount> [compacted] <material>** or **" + name + " <amount> batch[es]").queue();
       return;
     }
 
@@ -31,8 +31,13 @@ public class WithdrawCommand extends Command {
     }
 
     args = String.join(" ", args).split(" ", compacted ? 3 : 2);
+    String materialName = args[args.length - 1];
 
-    Material material = Material.fromName(args[args.length - 1]);
+    if(materialName.equalsIgnoreCase("batch") || materialName.equalsIgnoreCase("batches")) {
+
+    }
+
+    Material material = Material.fromName(materialName);
     if (material == null) {
       channel.sendMessage("Invalid material.").queue();
       return;
@@ -44,7 +49,7 @@ public class WithdrawCommand extends Command {
       return;
     }
 
-    xpAuditor.withdraw(amount, material, sender)
+    xpAuditor.withdraw(amount, material, nation)
         .thenAccept(b -> {
           if (!b) {
             channel.sendMessage("Not enough resources to withdraw!").queue();

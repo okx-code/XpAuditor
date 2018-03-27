@@ -2,6 +2,7 @@ package sh.okx.xpauditor;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import sh.okx.xpauditor.commands.BatchCommand;
 import sh.okx.xpauditor.commands.Command;
 import sh.okx.xpauditor.commands.DepositCommand;
 import sh.okx.xpauditor.commands.HelpCommand;
@@ -21,6 +22,7 @@ public class CommandManager extends ListenerAdapter {
     commands.add(new ProportionCommand(xpAuditor));
     commands.add(new ItemsCommand(xpAuditor));
     commands.add(new HelpCommand(xpAuditor));
+    commands.add(new BatchCommand(xpAuditor));
   }
 
   @Override
