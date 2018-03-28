@@ -157,7 +157,7 @@ public class XpAuditor {
     while(!queue.isEmpty() && needed > 0) {
       NationCount count = queue.poll();
 
-      int amount = Math.min(needed, count.getAmount());
+      int amount = Math.max(0, Math.min(needed, count.getAmount()));
       needed -= count.getAmount();
 
       forceWithdraw(amount, count.getMaterial(), count.getNation());

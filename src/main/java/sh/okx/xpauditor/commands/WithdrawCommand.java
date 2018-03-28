@@ -33,10 +33,6 @@ public class WithdrawCommand extends Command {
     args = String.join(" ", args).split(" ", compacted ? 3 : 2);
     String materialName = args[args.length - 1];
 
-    if(materialName.equalsIgnoreCase("batch") || materialName.equalsIgnoreCase("batches")) {
-
-    }
-
     Material material = Material.fromName(materialName);
     if (material == null) {
       channel.sendMessage("Invalid material.").queue();
