@@ -3,13 +3,11 @@ package sh.okx.xpauditor.xp;
 import sh.okx.xpauditor.XpAuditor;
 
 public class NationCount implements Comparable<NationCount> {
-  private XpAuditor auditor;
   private Nation nation;
   private Material material;
   private int amount;
 
   public NationCount(XpAuditor auditor, Nation nation, Material material) {
-    this.auditor = auditor;
     this.nation = nation;
     this.material = material;
     amount = auditor.getCount(nation, material).join();

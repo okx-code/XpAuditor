@@ -3,7 +3,7 @@ package sh.okx.xpauditor.xp;
 public enum Nation {
   VINLAND("Vinland"),
   OKASHIMA("Okashima"),
-  ANTONOS("Antonos");
+  THREEPTON("Threepton");
 
   private String string;
 

@@ -2,13 +2,11 @@ package sh.okx.xpauditor.commands;
 
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
 import sh.okx.xpauditor.XpAuditor;
 import sh.okx.xpauditor.xp.Nation;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.Map;
 
 public class ProportionCommand extends Command {
   public ProportionCommand(XpAuditor xpAuditor) {

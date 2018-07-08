@@ -36,12 +36,10 @@ public class CommandManager extends ListenerAdapter {
     String[] args = parts.length > 1 ? parts[1].split(" ") : new String[0];
 
     for (Command command : commands) {
-      if (!command.getName().equalsIgnoreCase(cmd)) {
-        continue;
+      if (command.getName().equalsIgnoreCase(cmd)) {
+        command.run(event.getChannel(), event.getMember(), args);
+        break;
       }
-
-      command.run(event.getChannel(), event.getMember(), args);
-      break;
     }
   }
 }

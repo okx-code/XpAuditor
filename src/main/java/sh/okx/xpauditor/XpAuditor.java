@@ -27,6 +27,8 @@ import java.util.PriorityQueue;
 import java.util.concurrent.CompletableFuture;
 
 public class XpAuditor {
+  private PooledConnection pool;
+
   public static void main(String[] args) throws LoginException, RateLimitedException, IOException {
     JSONObject json = new JSONObject(new String(IOUtil.readFully(XpAuditor.class.getResourceAsStream("/config.json"))));
 
@@ -47,8 +49,6 @@ public class XpAuditor {
     }
     return null;
   }
-
-  private PooledConnection pool;
 
   private XpAuditor(JDA jda, String password) {
     this.pool = new ConnectionBuilder()
@@ -102,15 +102,11 @@ public class XpAuditor {
   }
 
 
-  public CompletableFuture<Boolean> forceWithdraw(int amount, Material material, Nation nation) {
-    return getConnection().thenApply(connection -> {
-      connection.executeUpdate(
-          "INSERT INTO xp SET nation=?, material=?, amount=? " +
-              "ON DUPLICATE KEY UPDATE amount=amount-?",
-          nation.name(), material.name(), -amount + "", amount + "");
-
-      return true;
-    });
+  private void forceWithdraw(int amount, Material material, Nation nation) {
+    getConnection().thenAccept(connection -> connection.executeUpdate(
+        "INSERT INTO xp SET nation=?, material=?, amount=? " +
+            "ON DUPLICATE KEY UPDATE amount=amount-?",
+        nation.name(), material.name(), -amount + "", amount + ""));
   }
 
   public CompletableFuture<Integer> getContribution(Nation nation) {
@@ -146,7 +142,7 @@ public class XpAuditor {
   }
 
   public Map<Nation, Integer> withdrawBatch(Material material) {
-    int needed = material.getAmountNeeded()*64;
+    int needed = material.getAmountNeeded() * 64;
     Map<Nation, Integer> counts = new HashMap<>();
 
     PriorityQueue<NationCount> queue = new PriorityQueue<>();
