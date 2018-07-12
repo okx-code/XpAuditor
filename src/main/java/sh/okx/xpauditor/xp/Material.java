@@ -1,16 +1,19 @@
 package sh.okx.xpauditor.xp;
 
 public enum Material {
-  GLASS_BOTTLE(128, "glass bottle", "glass bottles", "bottle", "bottles"),
-  NETHER_WART(64, "nether wart", "nether warts", "wart", "warts"),
-  MELON(32, "melon", "melons"),
-  SUGAR_CANE(128, "sugar cane", "sugar canes", "cane", "canes"),
-  YELLOW_FLOWER(16, "yellow flower", "yellow flowers", "dandelion", "dandelions"),
-  ROTTEN_FLESH(128, "rotten flesh", "rotten fleshes", "fleshes", "fleshes"),
-  BROWN_MUSHROOM(64, "brown mushroom", "brown mushrooms", "mushroom", "mushrooms"),
-  VINE(32, "vine", "vines"),
-  BAKED_POTATO(256, "baked potato", "baked potatoes", "potato", "potatoes", "cooked potato", "cooked potatoes"),
-  BEETROOT(128, "beetroot", "beetroots");
+//  GLASS_BOTTLE(128, "glass bottle", "glass bottles", "bottle", "bottles"),
+//  NETHER_WART(64, "nether wart", "nether warts", "wart", "warts"),
+//  MELON(32, "melon", "melons"),
+//  SUGAR_CANE(128, "sugar cane", "sugar canes", "cane", "canes"),
+//  YELLOW_FLOWER(16, "yellow flower", "yellow flowers", "dandelion", "dandelions"),
+//  ROTTEN_FLESH(128, "rotten flesh", "rotten fleshes", "fleshes", "fleshes"),
+//  BROWN_MUSHROOM(64, "brown mushroom", "brown mushrooms", "mushroom", "mushrooms"),
+//  VINE(32, "vine", "vines"),
+//  BAKED_POTATO(256, "baked potato", "baked potatoes", "potato", "potatoes", "cooked potato", "cooked potatoes"),
+//  BEETROOT(128, "beetroot", "beetroots");
+  A(1, "a"),
+  B(2, "b"),
+  C(3, "c");
 
   private String name;
   private int amount;

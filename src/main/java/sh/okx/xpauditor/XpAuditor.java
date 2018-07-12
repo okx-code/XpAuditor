@@ -84,7 +84,7 @@ public class XpAuditor {
     return getConnection().thenApply(connection -> {
       QueryResults results = connection.table("xp")
           .select("amount")
-          .where().prepareEquals("material", material.name()).then()
+          .where().prepareEquals("material", material.name()).and().prepareEquals("nation", nation.name()).then()
           .execute();
 
       // check if we have enough resources

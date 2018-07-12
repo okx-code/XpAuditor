@@ -1,17 +1,23 @@
 package sh.okx.xpauditor.commands;
 
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import sh.okx.xpauditor.XpAuditor;
 import sh.okx.xpauditor.xp.Material;
 import sh.okx.xpauditor.xp.Nation;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BatchCommand extends Command {
+  private static final int BOTTLES = 128*9*9;
   private DecimalFormat df = new DecimalFormat("#0.##%");
 
   public BatchCommand(XpAuditor xpAuditor) {
@@ -32,10 +38,56 @@ public class BatchCommand extends Command {
       withdraw.forEach((n, i) -> amounts.put(n, amounts.getOrDefault(n, 0) + i));
     }
 
-    int total = amounts.values().stream().mapToInt(i -> i).sum();
+    int totalBottles = 128*9*9;
+    if(args.length > 0 && args[0].equalsIgnoreCase("repair")) {
+      totalBottles -= 16*9*9;
+    }
 
-    amounts.forEach((n, i) -> channel.sendMessage(n + " should get "
-        + getPercentage(i, total) + " for this batch (" + i + ").").queue(msg -> msg.pin().queue()));
+    double total = amounts.values().stream().reduce(0, Integer::sum);
+
+    long bottlesLeft = totalBottles;
+    List<Map.Entry<Nation, Integer>> sorted = amounts.entrySet().stream()
+        .sorted(Comparator.comparingInt(Map.Entry::getValue))
+        .collect(Collectors.toList());
+
+    for (int i = 1; i < sorted.size(); i++) {
+      Map.Entry<Nation, Integer> entry = sorted.get(i);
+
+      long bottles = Math.round(totalBottles * (entry.getValue() / total));
+      give(entry.getKey(), bottles, channel);
+      bottlesLeft -= bottles;
+    }
+
+    Map.Entry<Nation, Integer> entry = sorted.get(0);
+    give(entry.getKey(), bottlesLeft, channel);
+
+    channel.sendMessage("(total of " + (totalBottles / (9*9)) + " blocks)").queue();
+  }
+
+  private void give(Nation nation, long bottles, MessageChannel channel) {
+    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch")
+        .queue(msg -> msg.pin().queue());
+  }
+
+  private String formatBottles(long bottles) {
+    List<String> items = new ArrayList<>();
+    if(bottles > 9*9) {
+      long blocks = bottles / (9*9);
+      bottles = bottles % (9*9);
+      items.add(blocks + " block" + (blocks == 1 ? "" : "s"));
+    }
+    if(bottles > 9) {
+      long emeralds = bottles / 9;
+      bottles = bottles % 9;
+      items.add(emeralds + " emerald" + (emeralds == 1 ? "" : "s"));
+    }
+    if(bottles > 0) {
+      items.add(bottles + " bottle" + (bottles == 1 ? "" : "s"));
+    }
+    if(items.size() == 0) {
+      items.add("nothing");
+    }
+    return String.join(", ", items);
   }
 
   private boolean canMakeBatch() {
