@@ -88,11 +88,7 @@ public class XpAuditor {
         return false;
       }
 
-      getConnection().thenApply(connection ->
-          connection.executeUpdate("INSERT INTO xp SET nation=?, material=?, amount=? "
-                  + "ON DUPLICATE KEY UPDATE amount=amount-?",
-          nation.name(), material.name(), -amount + "", amount + ""));
-
+      forceWithdraw(amount, material, nation);
       return true;
     });
   }

@@ -65,8 +65,8 @@ public class BatchCommand extends Command {
   }
 
   private void give(Nation nation, long bottles, long totalBottles, MessageChannel channel) {
-    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch (" + getPercentage(bottles, totalBottles) + ").")
-        .queue(msg -> msg.pin().queue());
+    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch " +
+        "(" + getPercentage(bottles, totalBottles) + ").").queue();
   }
 
   private String formatBottles(long bottles) {
