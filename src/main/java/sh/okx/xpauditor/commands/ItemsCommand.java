@@ -20,9 +20,7 @@ public class ItemsCommand extends Command {
     CompletableFuture.runAsync(() -> {
       StringBuilder message = new StringBuilder("**Current items stockpiled:**\n");
 
-      Map<Material, Integer> amounts = new HashMap<>();
-      Arrays.stream(Material.values())
-          .forEach(material -> amounts.put(material, xpAuditor.getCount(material).join()));
+      Map<Material, Integer> amounts = xpAuditor.getAmounts();
 
       Material mostDemanded = null;
       int count = Integer.MAX_VALUE;

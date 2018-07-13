@@ -18,7 +18,7 @@ public class HelpCommand extends Command {
         .addField("!withdraw <amount> [compacted] <material>", "Withdraw resources from the stockpile.", false)
         .addField("!proportion", "See how many resources each nation has stockpiled.", false)
         .addField("!items", "See what items are in the stockpile and how much XP can be made.", false)
-        .addField("!batch", "Withdraw everything needed for one batch of XP.", false)
+        .addField("!batch [repair]", "Withdraw everything needed for one batch of XP.", false)
         .build()).queue();
   }
 }

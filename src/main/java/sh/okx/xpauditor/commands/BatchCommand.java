@@ -54,18 +54,18 @@ public class BatchCommand extends Command {
       Map.Entry<Nation, Integer> entry = sorted.get(i);
 
       long bottles = Math.round(totalBottles * (entry.getValue() / total));
-      give(entry.getKey(), bottles, channel);
+      give(entry.getKey(), bottles, totalBottles, channel);
       bottlesLeft -= bottles;
     }
 
     Map.Entry<Nation, Integer> entry = sorted.get(0);
-    give(entry.getKey(), bottlesLeft, channel);
+    give(entry.getKey(), bottlesLeft, totalBottles, channel);
 
     channel.sendMessage("(total of " + (totalBottles / (9*9)) + " blocks)").queue();
   }
 
-  private void give(Nation nation, long bottles, MessageChannel channel) {
-    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch")
+  private void give(Nation nation, long bottles, long totalBottles, MessageChannel channel) {
+    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch (" + getPercentage(bottles, totalBottles) + ").")
         .queue(msg -> msg.pin().queue());
   }
 
@@ -91,9 +91,7 @@ public class BatchCommand extends Command {
   }
 
   private boolean canMakeBatch() {
-    Map<Material, Integer> amounts = new HashMap<>();
-    Arrays.stream(Material.values())
-        .forEach(material -> amounts.put(material, xpAuditor.getCount(material).join()));
+    Map<Material, Integer> amounts = xpAuditor.getAmounts();
 
     int count = Integer.MAX_VALUE;
 
@@ -109,8 +107,9 @@ public class BatchCommand extends Command {
     count /= 64;
     return count > 0;
   }
-  private String getPercentage(int n, int total) {
-    float proportion = ((float) n) / ((float) total);
+
+  private String getPercentage(double n, double total) {
+    double proportion = n / total;
     return df.format(proportion);
   }
 }

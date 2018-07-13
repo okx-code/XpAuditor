@@ -4,6 +4,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import sh.okx.xpauditor.XpAuditor;
 import sh.okx.xpauditor.xp.Material;
+import sh.okx.xpauditor.xp.MaterialChange;
 import sh.okx.xpauditor.xp.Nation;
 
 public class DepositCommand extends Command {
@@ -18,35 +19,19 @@ public class DepositCommand extends Command {
       return;
     }
 
-    boolean compacted = args[1].equalsIgnoreCase("compacted");
-    int amount;
-    try {
-      amount = Integer.parseInt(args[0]) * (compacted ? 64 : 1);
-      if (amount < 1) {
-        throw new IllegalArgumentException();
-      }
-    } catch (IllegalArgumentException | AssertionError ex) {
-      channel.sendMessage("Invalid amount.").queue();
-      return;
-    }
-
-    args = String.join(" ", args).split(" ", compacted ? 3 : 2);
-
-    Material material = Material.fromName(args[args.length - 1]);
-    if (material == null) {
-      channel.sendMessage("Invalid material.").queue();
-      return;
-    }
-
     Nation nation = xpAuditor.getNation(sender);
     if (nation == null) {
       channel.sendMessage("You are not in a nation!").queue();
       return;
     }
 
-    xpAuditor.deposit(amount, material, nation);
-    channel.sendMessage("Deposited " + amount + " of "
-        + material
-        + " for " + nation).queue();
+    try {
+      MaterialChange change = MaterialChange.fromArgs(args);
+      xpAuditor.deposit(change.getAmount(), change.getMaterial(), nation);
+      channel.sendMessage("Deposited " + change.getAmount() + " of "
+          + change.getMaterial() + " for " + nation).queue();
+    } catch(IllegalArgumentException ex) {
+      channel.sendMessage(ex.getMessage()).queue();
+    }
   }
 }

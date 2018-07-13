@@ -21,6 +21,7 @@ import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -81,21 +82,16 @@ public class XpAuditor {
   }
 
   public CompletableFuture<Boolean> withdraw(int amount, Material material, Nation nation) {
-    return getConnection().thenApply(connection -> {
-      QueryResults results = connection.table("xp")
-          .select("amount")
-          .where().prepareEquals("material", material.name()).and().prepareEquals("nation", nation.name()).then()
-          .execute();
-
+    return getCount(nation, material).thenApply(sum -> {
       // check if we have enough resources
-      if(sum(results.getResultSet()) < amount) {
+      if(sum < amount) {
         return false;
       }
 
-      connection.executeUpdate(
-          "INSERT INTO xp SET nation=?, material=?, amount=? " +
-              "ON DUPLICATE KEY UPDATE amount=amount-?",
-          nation.name(), material.name(), -amount + "", amount + "");
+      getConnection().thenApply(connection ->
+          connection.executeUpdate("INSERT INTO xp SET nation=?, material=?, amount=? "
+                  + "ON DUPLICATE KEY UPDATE amount=amount-?",
+          nation.name(), material.name(), -amount + "", amount + ""));
 
       return true;
     });
@@ -130,15 +126,7 @@ public class XpAuditor {
   }
 
   public CompletableFuture<Integer> getCount(Nation nation, Material material) {
-    return getConnection().thenApply(connection -> {
-      QueryResults results = connection.table("xp")
-          .select("amount")
-          .where().prepareEquals("material", material.name())
-          .and().prepareEquals("nation", nation.name())
-          .then()
-          .execute();
-      return sum(results.getResultSet());
-    });
+    return getConnection().thenApply(connection -> sum(getMaterials(connection, nation, material)));
   }
 
   public Map<Nation, Integer> withdrawBatch(Material material) {
@@ -163,6 +151,13 @@ public class XpAuditor {
     return counts;
   }
 
+  public Map<Material, Integer> getAmounts() {
+    Map<Material, Integer> amounts = new HashMap<>();
+    Arrays.stream(Material.values())
+        .forEach(material -> amounts.put(material, getCount(material).join()));
+    return amounts;
+  }
+
   private int sum(ResultSet rs) {
     int sum = 0;
     try {
@@ -173,5 +168,14 @@ public class XpAuditor {
       return 0;
     }
     return sum;
+  }
+
+  private ResultSet getMaterials(Connection connection, Nation nation, Material material) {
+    return connection.table("xp")
+        .select("amount")
+        .where().prepareEquals("material", material.name())
+        .and().prepareEquals("nation", nation.name())
+        .then()
+        .execute().getResultSet();
   }
 }
