@@ -141,10 +141,14 @@ public class XpAuditor {
       needed -= count.getAmount();
 
       forceWithdraw(amount, count.getMaterial(), count.getNation());
-      counts.put(count.getNation(), counts.getOrDefault(count.getNation(), 0) + amount);
+      counts.put(count.getNation(), counts.getOrDefault(count.getNation(), 0) + getPercentage(amount, material.getAmountNeeded()*64));
     }
 
     return counts;
+  }
+
+  private int getPercentage(double amount, double max) {
+    return (int) ((amount / max) * 10_000);
   }
 
   public Map<Material, Integer> getAmounts() {
@@ -164,6 +168,18 @@ public class XpAuditor {
       return 0;
     }
     return sum;
+  }
+
+  private int sum(ResultSet rs, Material material) {
+    int sum = 0;
+    try {
+      while(rs.next()) {
+        sum += rs.getInt("amount");
+      }
+    } catch (SQLException e) {
+      return 0;
+    }
+    return (sum / (material.getAmountNeeded() * 64)) * 10_000;
   }
 
   private ResultSet getMaterials(Connection connection, Nation nation, Material material) {
