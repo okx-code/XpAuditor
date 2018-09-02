@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BatchCommand extends Command {
-  private static final int BOTTLES = 128*9*9;
   private DecimalFormat df = new DecimalFormat("#0.##%");
 
   public BatchCommand(XpAuditor xpAuditor) {

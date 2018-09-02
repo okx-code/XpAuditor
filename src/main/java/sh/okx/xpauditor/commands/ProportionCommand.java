@@ -22,8 +22,6 @@ public class ProportionCommand extends Command {
     xpAuditor.getContribution(nation).thenAccept(amount -> {
       if (amount == 0) {
         channel.sendMessage(nation + " has not contributed anything!").queue();
-      } else if (amount < 0) {
-        channel.sendMessage(nation + " has withdrawn " + -amount + " more items than they put in!").queue();
       } else {
         int total = Arrays.stream(Nation.values())
             .mapToInt(otherNation -> xpAuditor.getContribution(otherNation).join()).sum();
