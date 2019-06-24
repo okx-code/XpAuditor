@@ -15,21 +15,21 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = 'sh.okx.xpauditor.XpAuditor'
-
 sourceCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        url 'https://jitpack.io'
-    }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'com.github.okx-code:MySqlLib:master-SNAPSHOT'
-    compile 'net.dv8tion:JDA:3.4.0_318'
+    compile ('net.dv8tion:JDA:3.8.1_450') {
+        exclude module: 'opus-java'
+    }
+    compile 'com.zaxxer:HikariCP:3.1.0'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
 }
 
 jar {

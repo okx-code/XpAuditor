@@ -15,7 +15,7 @@ public class DepositCommand extends Command {
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
     if (args.length < 2) {
-      channel.sendMessage("Usage: **" + name + " <amount> [compacted] <material>**").queue();
+      channel.sendMessage("Usage: **" + name + " <amount> <material>**").queue();
       return;
     }
 
@@ -28,7 +28,7 @@ public class DepositCommand extends Command {
     try {
       MaterialChange change = MaterialChange.fromArgs(args);
       xpAuditor.deposit(change.getAmount(), change.getMaterial(), nation);
-      channel.sendMessage("Deposited " + change.getAmount() + " of "
+      channel.sendMessage("Deposited " + change.getAmount()/64 + " compacted "
           + change.getMaterial() + " for " + nation).queue();
     } catch(IllegalArgumentException ex) {
       channel.sendMessage(ex.getMessage()).queue();

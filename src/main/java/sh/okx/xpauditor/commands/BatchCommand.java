@@ -1,7 +1,6 @@
 package sh.okx.xpauditor.commands;
 
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import sh.okx.xpauditor.XpAuditor;
 import sh.okx.xpauditor.xp.Material;
@@ -9,7 +8,6 @@ import sh.okx.xpauditor.xp.Nation;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -49,23 +47,25 @@ public class BatchCommand extends Command {
         .sorted(Comparator.comparingInt(Map.Entry::getValue))
         .collect(Collectors.toList());
 
+    StringBuilder builder = new StringBuilder();
     for (int i = 1; i < sorted.size(); i++) {
       Map.Entry<Nation, Integer> entry = sorted.get(i);
 
       long bottles = Math.round(totalBottles * (entry.getValue() / total));
-      give(entry.getKey(), bottles, totalBottles, channel);
+      builder.append(give(entry.getKey(), bottles, totalBottles)).append("\n");
       bottlesLeft -= bottles;
     }
 
     Map.Entry<Nation, Integer> entry = sorted.get(0);
-    give(entry.getKey(), bottlesLeft, totalBottles, channel);
+    builder.append(give(entry.getKey(), bottlesLeft, totalBottles)).append("\n")
+        .append("(total of ").append(totalBottles / (9 * 9)).append(" blocks)");
 
-    channel.sendMessage("(total of " + (totalBottles / (9*9)) + " blocks)").queue();
+    channel.sendMessage(builder).queue();
   }
 
-  private void give(Nation nation, long bottles, long totalBottles, MessageChannel channel) {
-    channel.sendMessage(nation + " should get " + formatBottles(bottles) + " for this batch " +
-        "(" + getPercentage(bottles, totalBottles) + ").").queue();
+  private String give(Nation nation, long bottles, long totalBottles) {
+    return nation + " should get " + formatBottles(bottles) + " for this batch " +
+        "(" + getPercentage(bottles, totalBottles) + ")";
   }
 
   private String formatBottles(long bottles) {

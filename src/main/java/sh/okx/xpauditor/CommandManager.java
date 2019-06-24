@@ -7,6 +7,7 @@ import sh.okx.xpauditor.commands.Command;
 import sh.okx.xpauditor.commands.DepositCommand;
 import sh.okx.xpauditor.commands.HelpCommand;
 import sh.okx.xpauditor.commands.ItemsCommand;
+import sh.okx.xpauditor.commands.NationCommand;
 import sh.okx.xpauditor.commands.ProportionCommand;
 import sh.okx.xpauditor.commands.WithdrawCommand;
 
@@ -23,6 +24,7 @@ public class CommandManager extends ListenerAdapter {
     commands.add(new ItemsCommand(xpAuditor));
     commands.add(new HelpCommand(xpAuditor));
     commands.add(new BatchCommand(xpAuditor));
+    commands.add(new NationCommand(xpAuditor));
   }
 
   @Override

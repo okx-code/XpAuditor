@@ -18,10 +18,9 @@ public class MaterialChange {
   }
 
   public static MaterialChange fromArgs(String[] args) throws IllegalArgumentException {
-    boolean compacted = args[1].equalsIgnoreCase("compacted");
     int amount;
     try {
-      amount = Integer.parseInt(args[0]) * (compacted ? 64 : 1);
+      amount = Integer.parseInt(args[0]) * 64;
       if (amount < 1) {
         throw new IllegalArgumentException("Amount must be greater than 0.");
       }
@@ -29,9 +28,9 @@ public class MaterialChange {
       throw new IllegalArgumentException("Invalid number.");
     }
 
-    args = String.join(" ", args).split(" ", compacted ? 3 : 2);
+    args = String.join(" ", args).split(" ", 2);
 
-    Material material = Material.fromName(args[args.length - 1]);
+    Material material = Material.fromName(args[1]);
     if (material == null) {
       throw new IllegalArgumentException("Invalid material.");
     }

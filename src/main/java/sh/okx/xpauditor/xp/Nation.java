@@ -1,10 +1,12 @@
 package sh.okx.xpauditor.xp;
 
-public enum Nation {
-  VINLAND("Vinland"),
+public class Nation {
+  /*VINLAND("Vinland"),
   OKASHIMA("Okashima"),
-  THREEPTON("Threepton"),
-  MALTOVIA("Maltovia");
+//  THREEPTON("Threepton"),
+  MALTOVIA("Maltovia"),
+  ODRESH("Odresh"),
+  FALVYU("Falvyu");
 
   private String string;
 
@@ -15,5 +17,16 @@ public enum Nation {
   @Override
   public String toString() {
     return string;
+  }*/
+
+  private final String name;
+
+  public Nation(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

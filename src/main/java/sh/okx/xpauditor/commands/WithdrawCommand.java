@@ -15,7 +15,7 @@ public class WithdrawCommand extends Command {
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
     if (args.length < 2) {
-      channel.sendMessage("Usage: **" + name + " <amount> [compacted] <material>**").queue();
+      channel.sendMessage("Usage: **" + name + " <amount> <material>**").queue();
       return;
     }
 
@@ -27,9 +27,12 @@ public class WithdrawCommand extends Command {
 
     try {
       MaterialChange change = MaterialChange.fromArgs(args);
-      xpAuditor.withdraw(change.getAmount(), change.getMaterial(), nation);
-      channel.sendMessage("Withdrew " + change.getAmount() + " of "
-          + change.getMaterial() + " for " + nation).queue();
+      if (xpAuditor.withdraw(change.getAmount(), change.getMaterial(), nation)) {
+        channel.sendMessage("Withdrew " + change.getAmount()/64 + " compacted "
+            + change.getMaterial() + " for " + nation).queue();
+      } else {
+        channel.sendMessage("You do not have enough resources to withdraw that much.").queue();
+      }
     } catch(IllegalArgumentException ex) {
       channel.sendMessage(ex.getMessage()).queue();
     }

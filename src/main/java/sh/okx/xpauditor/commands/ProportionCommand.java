@@ -6,7 +6,7 @@ import sh.okx.xpauditor.XpAuditor;
 import sh.okx.xpauditor.xp.Nation;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
+import java.util.Map;
 
 public class ProportionCommand extends Command {
   public ProportionCommand(XpAuditor xpAuditor) {
@@ -15,20 +15,21 @@ public class ProportionCommand extends Command {
 
   @Override
   public void run(TextChannel channel, Member sender, String[] args) {
-    Arrays.stream(Nation.values()).forEach(nation -> check(channel, nation));
-  }
-
-  private void check(TextChannel channel, Nation nation) {
-    xpAuditor.getContribution(nation).thenAccept(amount -> {
-      if (amount == 0) {
-        channel.sendMessage(nation + " has not contributed anything!").queue();
-      } else {
-        int total = Arrays.stream(Nation.values())
-            .mapToInt(otherNation -> xpAuditor.getContribution(otherNation).join()).sum();
-        channel.sendMessage(nation + " has contributed " + amount + " items or "
-            + getPercentage(amount, total)).queue();
+    Map<Nation, Integer> contributions = xpAuditor.getContributions();
+    int sum = contributions.values().stream().reduce(0, Integer::sum);
+    StringBuilder message = new StringBuilder();
+    for (Map.Entry<Nation, Integer> entry : contributions.entrySet()) {
+      int amount = entry.getValue();
+      Nation nation = entry.getKey();
+      if (amount > 0) {
+        message.append(nation).append(" has contributed ").append(amount/64)
+            .append(" compacted item")
+            .append(amount == 1 ? "" : "s")
+            .append(" or ").append(getPercentage(amount, sum))
+            .append("\n");
       }
-    });
+    }
+    channel.sendMessage(message).queue();
   }
 
   private DecimalFormat df = new DecimalFormat("#0.##%");
@@ -37,6 +38,5 @@ public class ProportionCommand extends Command {
     float proportion = ((float) n) / ((float) total);
     return df.format(proportion);
   }
-
 
 }

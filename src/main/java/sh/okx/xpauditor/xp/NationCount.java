@@ -10,7 +10,7 @@ public class NationCount implements Comparable<NationCount> {
   public NationCount(XpAuditor auditor, Nation nation, Material material) {
     this.nation = nation;
     this.material = material;
-    amount = auditor.getCount(nation, material).join();
+    amount = auditor.getCount(nation, material);
   }
 
   public int getAmount() {
