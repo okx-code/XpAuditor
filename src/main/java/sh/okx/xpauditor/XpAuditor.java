@@ -79,16 +79,6 @@ public class XpAuditor {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-    /*
-    CREATE TABLE IF NOT EXISTS test (
-`nation` VARCHAR(64) NOT NULL,
-`material` VARCHAR(64) NOT NULL,
-`amount` INT NOT NULL,
-PRIMARY KEY (`nation`, `material`),
-FOREIGN KEY (`nation`)
-  REFERENCES nations(`nation`)
-  ON DELETE CASCADE)
-     */
 
     jda.addEventListener(new CommandManager(this));
   }
